@@ -6,6 +6,7 @@
 import express from 'express';
 import userRoutes from './routes/userRoutes';
 import noteRoutes from './routes/noteRoutes';
+import healthRoutes from './routes/health';
 import { errorHandler } from './middlewares/errorHandler';
 import { setupSwagger } from './config/swagger';
 
@@ -21,6 +22,7 @@ setupSwagger(app);
 // Configure API routes
 app.use('/api/users', userRoutes);  // User routes
 app.use('/api/notes', noteRoutes);  // Note routes
+app.use('/health', healthRoutes);     // Health check routes
 
 // Global error handler (must be after routes)
 app.use(errorHandler);

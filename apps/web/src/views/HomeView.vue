@@ -5,9 +5,10 @@ import ErrorMessage from "../components/ErrorMessage.vue";
 import SearchBar from "../components/SearchBar.vue";
 import NotesList from "../components/NotesList.vue";
 
-// Utilisation du composable pour gérer les notes
+// Use notes composable for data management
 const { loading, error, fetchNotesPaginated, searchNotes } = useNotes();
 
+// Component reactive state
 const recentNotes = ref<any[]>([]);
 const currentPage = ref(1);
 const hasMoreNotes = ref(true);
@@ -17,7 +18,7 @@ const isSearchMode = ref(false);
 const searchTimeout = ref<number | null>(null);
 let refreshInterval: number | null = null;
 
-// Fonction debounce pour la recherche
+// Debounce function to prevent excessive API calls during search
 const debounceSearch = (query: string) => {
   if (searchTimeout.value) {
     clearTimeout(searchTimeout.value);
@@ -25,10 +26,10 @@ const debounceSearch = (query: string) => {
   
   searchTimeout.value = window.setTimeout(() => {
     performSearch(query);
-  }, 300); // 300ms de debounce
+  }, 300); // 300ms debounce delay
 };
 
-// Fonction pour effectuer la recherche
+// Execute search with API call
 const performSearch = async (query: string) => {
   if (!query.trim()) {
     isSearchMode.value = false;
@@ -45,42 +46,42 @@ const performSearch = async (query: string) => {
     recentNotes.value = results;
     hasMoreNotes.value = results.length === notesPerPage;
   } catch (error) {
-    console.error("Erreur lors de la recherche:", error);
+    console.error("Search error:", error);
   }
 };
 
-// Fonction pour charger plus de résultats de recherche
+// Load more search results with pagination
 const loadMoreSearchResults = async () => {
   if (!loading.value && hasMoreNotes.value && searchQuery.value.trim()) {
     currentPage.value++;
     
     try {
       const newResults = await searchNotes(searchQuery.value.trim(), currentPage.value, notesPerPage);
-      // Éviter les doublons en vérifiant les IDs
+      // Prevent duplicates by checking existing IDs
       const existingIds = new Set(recentNotes.value.map((note: any) => note.id));
       const uniqueNewResults = newResults.filter((note: any) => !existingIds.has(note.id));
       recentNotes.value = [...recentNotes.value, ...uniqueNewResults];
       hasMoreNotes.value = newResults.length === notesPerPage;
     } catch (error) {
-      console.error("Erreur lors du chargement de plus de résultats:", error);
+      console.error("Load more search results error:", error);
     }
   }
 };
 
-// Gestionnaire de changement de recherche
+// Handle search input changes
 const handleSearchChange = (query: string) => {
   searchQuery.value = query;
   debounceSearch(query);
 };
 
-// Gestionnaire d'effacement de recherche
+// Handle search clear action
 const handleSearchClear = async () => {
   searchQuery.value = "";
   isSearchMode.value = false;
   await loadNotes(true);
 };
 
-// Fonction pour charger les notes
+// Load notes with pagination and duplicate prevention
 const loadNotes = async (reset = false) => {
   try {
     if (reset) {
@@ -93,20 +94,20 @@ const loadNotes = async (reset = false) => {
     if (reset) {
       recentNotes.value = newNotes;
     } else {
-      // Éviter les doublons en vérifiant les IDs
+      // Prevent duplicates by checking existing IDs
       const existingIds = new Set(recentNotes.value.map((note: any) => note.id));
       const uniqueNewNotes = newNotes.filter((note: any) => !existingIds.has(note.id));
       recentNotes.value = [...recentNotes.value, ...uniqueNewNotes];
     }
     
-    // Vérifier s'il y a plus de notes (si on reçoit moins que demandé, c'est la fin)
+    // Check if there are more notes (if we receive less than requested, it's the end)
     hasMoreNotes.value = newNotes.length === notesPerPage;
   } catch (error) {
-    console.error("Erreur lors du chargement des notes récentes:", error);
+    console.error("Load notes error:", error);
   }
 };
 
-// Fonction pour charger plus de notes
+// Load more notes with pagination
 const loadMoreNotes = async () => {
   if (!loading.value && hasMoreNotes.value && !isSearchMode.value) {
     currentPage.value++;
@@ -114,17 +115,17 @@ const loadMoreNotes = async () => {
   }
 };
 
-// Chargement initial des notes récentes et configuration de l'auto-refresh
+// Initialize component: load notes and setup auto-refresh
 onMounted(async () => {
   await loadNotes();
 
-  // Auto-refresh toutes les 3 secondes
+  // Auto-refresh every 3 seconds
   refreshInterval = window.setInterval(() => {
     loadNotes();
   }, 1000);
 });
 
-// Nettoyage de l'intervalle et du timeout lors de la destruction du composant
+// Cleanup intervals and timeouts on component unmount
 onUnmounted(() => {
   if (refreshInterval) {
     clearInterval(refreshInterval);
@@ -134,6 +135,7 @@ onUnmounted(() => {
   }
 });
 
+// Handle error message close
 const handleCloseError = () => {
   error.value = null;
 };
@@ -142,39 +144,39 @@ const handleCloseError = () => {
 <template>
   <div class="min-h-[60vh] py-8">
     <div class="max-w-4xl mx-auto px-4 md:px-8">
-      <!-- Titre -->
+      <!-- Page Title -->
       <div class="text-center mb-8">
         <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
-          Bienvenue sur votre Bloc Notes
+          Welcome to your Note Block
         </h2>
         <p class="text-lg text-gray-600">
-          Découvrez les dernières notes partagées par la communauté
+          Discover the latest notes shared by the community
         </p>
       </div>
 
-      <!-- Barre de recherche -->
+      <!-- Search Bar -->
       <div class="bg-white rounded-lg p-6 shadow-md border border-gray-200 mb-6">
         <SearchBar
           v-model="searchQuery"
-          placeholder="Rechercher des notes par titre ou contenu..."
+          placeholder="Search notes by title or content..."
           :disabled="loading"
           @search="handleSearchChange"
           @clear="handleSearchClear"
         />
       </div>
 
-      <!-- Messages d'erreur -->
+      <!-- Error Messages -->
       <ErrorMessage :message="error" @close="handleCloseError" />
 
-      <!-- Liste des notes -->
+      <!-- Notes List -->
       <NotesList
         :notes="recentNotes"
         :loading="loading"
-        :title="isSearchMode ? 'Résultats de recherche' : 'Notes récentes'"
-        :subtitle='isSearchMode ? `Résultats pour "${searchQuery}"` : "Découvrez les dernières notes partagées par toute la communauté"'
+        :title="isSearchMode ? 'Search Results' : 'Recent Notes'"
+        :subtitle='isSearchMode ? `Results for "${searchQuery}"` : "Discover the latest notes shared by the community"'
         :show-load-more="hasMoreNotes"
         :has-more-notes="hasMoreNotes"
-        :load-more-text="isSearchMode ? 'Voir plus de résultats' : 'Voir plus de notes'"
+        :load-more-text="isSearchMode ? 'Load more results' : 'Load more notes'"
         @load-more="isSearchMode ? loadMoreSearchResults() : loadMoreNotes()"
       />
     </div>

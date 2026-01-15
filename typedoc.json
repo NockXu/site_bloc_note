@@ -1,0 +1,24 @@
+{
+  "entryPoints": [
+    "apps/web/src/**/*.vue",
+    "apps/web/src/**/*.ts"
+  ],
+  "out": "docs",
+  "readme": "none",
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**"
+  ],
+  "theme": "default",
+  "includeVersion": true,
+  "sort": ["source-order"],
+  "categorizeByGroup": true,
+  "defaultCategory": "Components",
+  "categoryOrder": [
+    "Components",
+    "Composables",
+    "Stores",
+    "Types",
+    "Views"
+  ]
+}

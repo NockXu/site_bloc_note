@@ -21,25 +21,26 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: "Notes récentes",
-  subtitle: "Découvrez les dernières notes partagées par toute la communauté",
+  title: "Recent Notes",
+  subtitle: "Discover the latest notes shared by the community",
   showLoadMore: true,
   hasMoreNotes: false,
-  loadMoreText: "Voir plus de notes",
+  loadMoreText: "Load more notes",
 });
 
 const emit = defineEmits<{
   "load-more": [];
 }>();
 
+// Format date for display
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString("fr-FR");
+  return new Date(dateString).toLocaleDateString("en-US");
 };
 </script>
 
 <template>
   <div class="bg-white rounded-lg p-6 shadow-md border border-gray-200">
-    <!-- En-tête -->
+    <!-- Header -->
     <div class="mb-6">
       <h3 class="text-xl font-semibold text-gray-700">
         📝 {{ title }}
@@ -49,13 +50,13 @@ const formatDate = (dateString: string) => {
       </p>
     </div>
 
-    <!-- État de chargement initial -->
+    <!-- Initial loading state -->
     <div v-if="loading && notes.length === 0" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
-      <p class="mt-4 text-gray-500">Chargement des notes...</p>
+      <p class="mt-4 text-gray-500">Loading notes...</p>
     </div>
 
-    <!-- Liste vide -->
+    <!-- Empty state -->
     <div v-else-if="notes.length === 0" class="text-center py-12">
       <svg
         class="mx-auto h-16 w-16 text-gray-300 mb-4"
@@ -70,13 +71,13 @@ const formatDate = (dateString: string) => {
           d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
         />
       </svg>
-      <p class="text-gray-500 text-lg">Aucune note trouvée</p>
+      <p class="text-gray-500 text-lg">No notes found</p>
       <p class="text-gray-400 text-sm mt-2">
-        Soyez le premier à partager une note !
+        Be the first to share a note!
       </p>
     </div>
 
-    <!-- Liste des notes -->
+    <!-- Notes list -->
     <ul v-else class="divide-y divide-gray-100">
       <li
         v-for="note in notes"
@@ -94,12 +95,12 @@ const formatDate = (dateString: string) => {
               </p>
               <div class="flex items-center gap-4 text-sm text-gray-400">
                 <span>
-                  Créée par :
+                  Created by:
                   <span v-if="note.user" class="font-medium text-gray-600">
                     {{ note.user.username }}
                   </span>
                   <span v-else class="text-gray-500">
-                    Utilisateur #{{ note.userId }}
+                    User #{{ note.userId }}
                   </span>
                 </span>
                 <span v-if="note.createdAt" class="text-gray-400">
@@ -112,7 +113,7 @@ const formatDate = (dateString: string) => {
       </li>
     </ul>
 
-    <!-- Bouton Voir plus -->
+    <!-- Load more button -->
     <div v-if="showLoadMore && hasMoreNotes && !loading" class="text-center mt-6">
       <button
         @click="$emit('load-more')"
@@ -122,9 +123,9 @@ const formatDate = (dateString: string) => {
       </button>
     </div>
 
-    <!-- Fin des notes -->
+    <!-- End of notes message -->
     <div v-if="!hasMoreNotes && notes.length > 0" class="text-center mt-6 text-gray-500">
-      <p>🎉 Toutes les notes ont été affichées</p>
+      <p>🎉 All notes have been displayed</p>
     </div>
   </div>
 </template>

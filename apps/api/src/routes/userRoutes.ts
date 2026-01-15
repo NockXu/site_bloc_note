@@ -8,6 +8,7 @@ import {
   createUser,
   getUsers,
   getUserById,
+  getUserByUsername,
   updateUser,
   deleteUser,
 } from '../controllers/userController';
@@ -60,6 +61,35 @@ router.get('/', getUsers);
  *               $ref: '#/components/schemas/Error'
  */
 router.get('/:id', getUserById);
+
+/**
+ * @swagger
+ * /api/users/username/{username}:
+ *   get:
+ *     summary: Get a user by username
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username
+ *     responses:
+ *       200:
+ *         description: User with their notes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get('/username/:username', getUserByUsername);
 
 /**
  * @swagger

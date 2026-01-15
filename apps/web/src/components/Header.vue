@@ -25,12 +25,20 @@
           Voir les posts
         </router-link>
         <router-link
+          v-if="!authStore.isAuthenticated"
           to="/login"
           class="text-white no-underline px-4 py-2 rounded transition-all duration-300 font-medium hover:bg-white/10"
           :class="{ 'bg-white/20': isActive('login') }"
         >
           Se connecter
         </router-link>
+        <button
+          v-else-if="authStore.isAuthenticated"
+          @click="authStore.logout"
+          class="text-white no-underline px-4 py-2 rounded transition-all duration-300 font-medium hover:bg-white/10"
+        >
+          Se deconnecter
+        </button>
       </nav>
     </div>
   </header>
@@ -38,6 +46,9 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { useAuthStore } from "../stores/authStore";
+
+const authStore = useAuthStore();
 
 const route = useRoute();
 

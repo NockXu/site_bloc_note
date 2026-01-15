@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../config/database';
+import bcrypt from 'bcrypt';
 
 // Create a user
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -33,6 +34,24 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     const id = parseInt(idParam, 10);
     const user = await prisma.user.findUnique({
       where: { id },
+      include: { notes: true },
+    });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get user by username
+export const getUserByUsername = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { username } = req.params;
+    const user = await prisma.user.findUnique({
+      where: { username },
       include: { notes: true },
     });
     if (!user) {

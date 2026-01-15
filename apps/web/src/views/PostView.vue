@@ -1,28 +1,35 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useItems } from "../composables/useItems";
+import { useNotes } from "../composables/useNotes";
 import ErrorMessage from "../components/ErrorMessage.vue";
 
-// Utilisation du composable pour gérer les items
-const { items, loading, error, fetchItems, createItem, deleteItem } =
-  useItems();
+// Utilisation du composable pour gérer les notes
+const { notes, loading, error, fetchNotes, createNote, deleteNote } =
+  useNotes();
 
-const newItemName = ref("");
+const newNoteTitle = ref("");
+const newNoteContent = ref("");
+const selectedUserId = ref(1);
 
-// Chargement initial des items
+// Chargement initial des notes
 onMounted(() => {
-  fetchItems();
+  fetchNotes();
 });
 
 // Gestionnaires d'événements
-const handleCreateItem = async () => {
-  if (!newItemName.value.trim()) return;
-  await createItem({ name: newItemName.value });
-  newItemName.value = "";
+const handleCreateNote = async () => {
+  if (!newNoteTitle.value.trim() || !newNoteContent.value.trim()) return;
+  await createNote({ 
+    titre: newNoteTitle.value, 
+    contenu: newNoteContent.value,
+    userId: selectedUserId.value
+  });
+  newNoteTitle.value = "";
+  newNoteContent.value = "";
 };
 
-const handleDeleteItem = async (id: number) => {
-  await deleteItem(id);
+const handleDeleteNote = async (id: number) => {
+  await deleteNote(id);
 };
 
 const handleCloseError = () => {
@@ -35,7 +42,7 @@ const handleCloseError = () => {
     <div class="max-w-4xl mx-auto px-4 md:px-8">
       <!-- Titre -->
       <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 text-center">
-        Liste des posts
+        Liste des notes
       </h2>
 
       <!-- Messages d'erreur -->
@@ -46,22 +53,37 @@ const handleCloseError = () => {
         class="bg-white rounded-lg p-6 shadow-md mb-8 border border-gray-200"
       >
         <h3 class="text-xl font-semibold mb-4 text-gray-700">
-          Créer un nouvel item
+          Créer une nouvelle note
         </h3>
         <form
-          @submit.prevent="handleCreateItem"
-          class="flex flex-col sm:flex-row gap-4"
+          @submit.prevent="handleCreateNote"
+          class="flex flex-col gap-4"
         >
           <input
-            v-model="newItemName"
+            v-model="newNoteTitle"
             type="text"
-            placeholder="Nom de l'item"
+            placeholder="Titre de la note"
             :disabled="loading"
-            class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all"
+            class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all"
+          />
+          <textarea
+            v-model="newNoteContent"
+            placeholder="Contenu de la note"
+            :disabled="loading"
+            rows="4"
+            class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all resize-none"
+          ></textarea>
+          <input
+            v-model="selectedUserId"
+            type="number"
+            placeholder="ID utilisateur"
+            :disabled="loading"
+            min="1"
+            class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all"
           />
           <button
             type="submit"
-            :disabled="loading || !newItemName.trim()"
+            :disabled="loading || !newNoteTitle.trim() || !newNoteContent.trim()"
             class="px-8 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-medium transition-all hover:from-primary-600 hover:to-primary-700 hover:shadow-lg disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {{ loading ? "Ajout..." : "Ajouter" }}
@@ -69,19 +91,19 @@ const handleCloseError = () => {
         </form>
       </div>
 
-      <!-- Liste des items -->
+      <!-- Liste des notes -->
       <div class="bg-white rounded-lg p-6 shadow-md border border-gray-200">
         <div class="flex justify-between items-center mb-6">
-          <h3 class="text-xl font-semibold text-gray-700">Liste des items</h3>
+          <h3 class="text-xl font-semibold text-gray-700">Liste des notes</h3>
           <span
             class="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium"
           >
-            {{ items.length }} {{ items.length > 1 ? "items" : "item" }}
+            {{ notes.length }} {{ notes.length > 1 ? "notes" : "note" }}
           </span>
         </div>
 
         <!-- État de chargement -->
-        <div v-if="loading && items.length === 0" class="text-center py-12">
+        <div v-if="loading && notes.length === 0" class="text-center py-12">
           <div
             class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"
           ></div>
@@ -89,7 +111,7 @@ const handleCloseError = () => {
         </div>
 
         <!-- Liste vide -->
-        <div v-else-if="items.length === 0" class="text-center py-12">
+        <div v-else-if="notes.length === 0" class="text-center py-12">
           <svg
             class="mx-auto h-16 w-16 text-gray-300 mb-4"
             fill="none"
@@ -103,20 +125,24 @@ const handleCloseError = () => {
               d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
             />
           </svg>
-          <p class="text-gray-500 text-lg">Aucun item pour le moment</p>
-          <p class="text-gray-400 text-sm mt-2">Créez-en un pour commencer !</p>
+          <p class="text-gray-500 text-lg">Aucune note pour le moment</p>
+          <p class="text-gray-400 text-sm mt-2">Créez-en une pour commencer !</p>
         </div>
 
-        <!-- Liste des items -->
+        <!-- Liste des notes -->
         <ul v-else class="divide-y divide-gray-100">
           <li
-            v-for="item in items"
-            :key="item.id"
-            class="flex justify-between items-center py-4 px-2 transition-all hover:bg-gray-50 rounded-lg group"
+            v-for="note in notes"
+            :key="note.id"
+            class="flex justify-between items-start py-4 px-2 transition-all hover:bg-gray-50 rounded-lg group"
           >
-            <span class="flex-1 text-lg text-gray-700">{{ item.name }}</span>
+            <div class="flex-1">
+              <h4 class="text-lg font-semibold text-gray-800 mb-2">{{ note.titre }}</h4>
+              <p class="text-gray-600 mb-2">{{ note.contenu }}</p>
+              <p class="text-sm text-gray-400">Utilisateur ID: {{ note.userId }}</p>
+            </div>
             <button
-              @click="handleDeleteItem(item.id)"
+              @click="handleDeleteNote(note.id)"
               class="px-4 py-2 bg-red-500 text-white rounded-lg transition-all hover:bg-red-600 hover:shadow-md opacity-0 group-hover:opacity-100"
               title="Supprimer"
             >

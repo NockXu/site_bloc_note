@@ -135,6 +135,29 @@ export function useNotes() {
     }
   };
 
+  const fetchRecentNotes = async (limit: number = 10) => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await fetch(`/api/notes?limit=${limit}&sort=desc`);
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération des notes récentes");
+      }
+      const allNotes = await response.json();
+      // Trier par date de création décroissante et limiter
+      return allNotes
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, limit);
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : "Une erreur est survenue";
+      console.error("Fetch recent notes error:", err);
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     notes,
     loading,
@@ -145,5 +168,6 @@ export function useNotes() {
     createNote,
     updateNote,
     deleteNote,
+    fetchRecentNotes,
   };
 }

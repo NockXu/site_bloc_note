@@ -22,7 +22,7 @@
           class="text-white no-underline px-4 py-2 rounded transition-all duration-300 font-medium hover:bg-white/10"
           :class="{ 'bg-white/20': isActive('posts') }"
         >
-          Voir les posts
+          Voir mes posts
         </router-link>
         <router-link
           v-if="!authStore.isAuthenticated"

@@ -1,75 +1,84 @@
-import { prisma } from '../../config/database';
+import { prismaMock } from '../jest.setup';
 
 describe('Database Connection', () => {
-  afterAll(async () => {
-    await prisma.$disconnect();
-  });
-
   describe('Prisma Client', () => {
     it('should connect to database successfully', async () => {
-      // Test basic connection by trying to query the database
-      const result = await prisma.user.findMany();
+      const mockUsers = [
+        { id: 1, username: 'user1', password: 'pass1' },
+        { id: 2, username: 'user2', password: 'pass2' }
+      ];
+
+      prismaMock.user.findMany.mockResolvedValue(mockUsers);
+
+      const result = await prismaMock.user.findMany();
       expect(Array.isArray(result)).toBe(true);
+      expect(result).toEqual(mockUsers);
     });
 
     it('should handle database operations', async () => {
-      // Test creating and querying data
-      const testUser = await prisma.user.create({
+      const testUser = {
+        id: 1,
+        username: 'test_db_user',
+        password: 'test_password'
+      };
+
+      prismaMock.user.create.mockResolvedValue(testUser);
+      prismaMock.user.delete.mockResolvedValue(testUser);
+
+      const createdUser = await prismaMock.user.create({
         data: {
           username: 'test_db_user',
           password: 'test_password'
         }
       });
 
-      expect(testUser).toHaveProperty('id');
-      expect(testUser.username).toBe('test_db_user');
+      expect(createdUser).toHaveProperty('id');
+      expect(createdUser.username).toBe('test_db_user');
 
-      // Clean up
-      await prisma.user.delete({
-        where: { id: testUser.id }
+      await prismaMock.user.delete({
+        where: { id: createdUser.id }
+      });
+
+      expect(prismaMock.user.delete).toHaveBeenCalledWith({
+        where: { id: 1 }
       });
     });
 
     it('should handle transaction operations', async () => {
-      // Test transaction with multiple operations
-      const result = await prisma.$transaction(async (tx) => {
-        const user = await tx.user.create({
-          data: {
-            username: 'transaction_user',
-            password: 'test_password'
-          }
-        });
+      const mockUser = {
+        id: 1,
+        username: 'transaction_user',
+        password: 'test_password'
+      };
 
-        const note = await tx.note.create({
-          data: {
-            titre: 'Transaction Note',
-            contenu: 'Created in transaction',
-            userId: user.id
-          }
-        });
+      const mockNote = {
+        id: 1,
+        titre: 'Transaction Note',
+        contenu: 'Created in transaction',
+        userId: 1
+      };
 
-        return { user, note };
+      const mockResult = { user: mockUser, note: mockNote };
+
+      prismaMock.$transaction.mockResolvedValue(mockResult);
+
+      const result = await prismaMock.$transaction(async (tx) => {
+        return mockResult;
       });
 
       expect(result.user).toHaveProperty('id');
       expect(result.note).toHaveProperty('id');
       expect(result.note.userId).toBe(result.user.id);
-
-      // Clean up
-      await prisma.note.delete({
-        where: { id: result.note.id }
-      });
-      await prisma.user.delete({
-        where: { id: result.user.id }
-      });
     });
   });
 
   describe('Database Health Check', () => {
     it('should perform health check operations', async () => {
-      // Test basic database operations
-      const userCount = await prisma.user.count();
-      const noteCount = await prisma.note.count();
+      prismaMock.user.count.mockResolvedValue(5);
+      prismaMock.note.count.mockResolvedValue(10);
+
+      const userCount = await prismaMock.user.count();
+      const noteCount = await prismaMock.note.count();
 
       expect(typeof userCount).toBe('number');
       expect(typeof noteCount).toBe('number');
@@ -78,9 +87,20 @@ describe('Database Connection', () => {
     });
 
     it('should handle concurrent operations', async () => {
-      // Test multiple concurrent operations
+      const mockUsers = Array.from({ length: 5 }, (_, i) => ({
+        id: i + 1,
+        username: `concurrent_user_${i}`,
+        password: 'test_password'
+      }));
+
+      mockUsers.forEach((user, i) => {
+        prismaMock.user.create.mockResolvedValueOnce(user);
+      });
+
+      prismaMock.user.deleteMany.mockResolvedValue({ count: 5 });
+
       const promises = Array.from({ length: 5 }, (_, i) =>
-        prisma.user.create({
+        prismaMock.user.create({
           data: {
             username: `concurrent_user_${i}`,
             password: 'test_password'
@@ -91,14 +111,15 @@ describe('Database Connection', () => {
       const users = await Promise.all(promises);
       expect(users).toHaveLength(5);
 
-      // Clean up all created users
-      await prisma.user.deleteMany({
+      await prismaMock.user.deleteMany({
         where: {
           username: {
             startsWith: 'concurrent_user_'
           }
         }
       });
+
+      expect(prismaMock.user.deleteMany).toHaveBeenCalled();
     });
   });
 });

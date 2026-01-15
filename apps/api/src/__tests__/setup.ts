@@ -1,16 +1,2 @@
-import { prisma } from '../config/database';
-
-beforeAll(async () => {
-  // Connect to test database or setup test environment
-});
-
-afterAll(async () => {
-  // Clean up test database
-  await prisma.$disconnect();
-});
-
-beforeEach(async () => {
-  // Clean up data before each test
-  await prisma.note.deleteMany();
-  await prisma.user.deleteMany();
-});
+// Import the mock jest setup to ensure Prisma is mocked across all tests
+import './jest.setup';

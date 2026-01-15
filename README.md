@@ -6,6 +6,11 @@ Site servant d'exercice de maintenance applicative
 
 API REST TypeScript construite avec Node.js et Express, implémentant un système CRUD simple pour gérer des items.
 
+## Groupe de dev 1
+
+[DAVID Gabriel](https://github.com/NockXu)
+[GUILMIN Leny](https://github.com/TarzanHR)
+
 ## Technologies
 
 - **Node.js** - Runtime JavaScript

@@ -1,3 +1,19 @@
+<template>
+  <div
+    v-if="message"
+    class="flex justify-between items-center bg-red-50 text-red-800 p-4 rounded mb-4 border-l-4 border-red-800"
+  >
+    <span>{{ message }}</span>
+    <button
+      @click="emit('close')"
+      class="bg-transparent border-none text-red-800 text-2xl cursor-pointer p-0 w-6 h-6 flex items-center justify-center rounded-full transition-colors hover:bg-red-800/10"
+      title="Fermer"
+    >
+      ✕
+    </button>
+  </div>
+</template>
+
 <script setup lang="ts">
 defineProps<{
   message: string | null;
@@ -7,44 +23,3 @@ const emit = defineEmits<{
   close: [];
 }>();
 </script>
-
-<template>
-  <div v-if="message" class="error">
-    <span>{{ message }}</span>
-    <button @click="emit('close')" class="close-btn" title="Fermer">✕</button>
-  </div>
-</template>
-
-<style scoped>
-.error {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #ffebee;
-  color: #c62828;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  border-left: 4px solid #c62828;
-}
-
-.close-btn {
-  background: transparent;
-  border: none;
-  color: #c62828;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-
-.close-btn:hover {
-  background: rgba(198, 40, 40, 0.1);
-}
-</style>

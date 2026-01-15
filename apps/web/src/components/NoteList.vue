@@ -1,28 +1,50 @@
 <script setup lang="ts">
+/**
+ * NoteList Component
+ * 
+ * Displays a list of notes with delete functionality.
+ * Provides user notifications for actions.
+ * Supports loading states and empty list handling.
+ */
 import { ref } from "vue";
 import type { Note } from "../types/note";
 
+// Define component props
 interface Props {
+  /** Array of notes to display */
   notes: Note[];
+  /** Whether the component is in loading state */
   loading: boolean;
 }
 
-defineProps<Props>();
+// Define component props
+const props = withDefaults(defineProps<Props>(), {
+  notes: () => [],
+  loading: false,
+});
 
+// Define component emits
 const emit = defineEmits<{
+  /** Emitted when a note is deleted */
   deleteNote: [id: number];
 }>();
 
+// Notification state
 const notification = ref<{
-  type: "success" | "error" | null;
-  message: string;
-  show: boolean;
+  type: "success" | "error" | null; // Notification type
+  message: string; // Notification message
+  show: boolean; // Notification visibility
 }>({
   type: null,
   message: "",
   show: false,
 });
 
+/**
+ * Show notification with auto-hide
+ * @param type - Notification type (success/error)
+ * @param message - Message to display
+ */
 const showNotification = (type: "success" | "error", message: string) => {
   notification.value = { type, message, show: true };
   setTimeout(() => {
@@ -30,14 +52,28 @@ const showNotification = (type: "success" | "error", message: string) => {
   }, 3000);
 };
 
+/**
+ * Handle note deletion
+ * Emits deleteNote event and shows notification
+ * @param id - ID of the note to delete
+ */
 const handleDeleteNote = async (id: number) => {
   try {
     emit("deleteNote", id);
-    showNotification("success", "Note supprimée avec succès !");
+    showNotification("success", "Note deleted successfully!");
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : "Erreur lors de la suppression de la note";
+    const errorMsg = error instanceof Error ? error.message : "Error deleting note";
     showNotification("error", errorMsg);
   }
+};
+
+/**
+ * Format date for display
+ * @param dateString - Date string to format
+ * @returns Formatted date string
+ */
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("en-US");
 };
 </script>
 
@@ -60,7 +96,7 @@ const handleDeleteNote = async (id: number) => {
       }"
       class="mb-4 p-4 rounded-lg border flex items-center gap-3 shadow-sm"
     >
-      <!-- Icône succès -->
+      <!-- Success Icon -->
       <svg
         v-if="notification.type === 'success'"
         class="w-5 h-5 flex-shrink-0"
@@ -76,7 +112,7 @@ const handleDeleteNote = async (id: number) => {
         />
       </svg>
       
-      <!-- Icône erreur -->
+      <!-- Error Icon -->
       <svg
         v-else-if="notification.type === 'error'"
         class="w-5 h-5 flex-shrink-0"
@@ -94,7 +130,7 @@ const handleDeleteNote = async (id: number) => {
       
       <span class="flex-1">{{ notification.message }}</span>
       
-      <!-- Bouton fermer -->
+      <!-- Close Button -->
       <button
         @click="notification.show = false"
         class="flex-shrink-0 p-1 rounded hover:bg-black/5 transition-colors"
@@ -106,9 +142,11 @@ const handleDeleteNote = async (id: number) => {
     </div>
   </transition>
 
+  <!-- Notes Container -->
   <div class="bg-white rounded-lg p-6 shadow-md border border-gray-200">
+    <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h3 class="text-xl font-semibold text-gray-700">Liste des notes</h3>
+      <h3 class="text-xl font-semibold text-gray-700">Notes List</h3>
       <span
         class="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium"
       >
@@ -116,42 +154,45 @@ const handleDeleteNote = async (id: number) => {
       </span>
     </div>
 
-    <!-- État de chargement -->
+    <!-- Loading State -->
     <div v-if="loading && notes.length === 0" class="text-center py-12">
       <div
         class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"
       ></div>
-      <p class="mt-4 text-gray-500">Chargement...</p>
+      <p class="mt-4 text-gray-500">Loading...</p>
     </div>
 
-    <!-- Liste vide -->
+    <!-- Empty State -->
     <div v-else-if="notes.length === 0" class="text-center py-12">
       <slot name="empty-message">
-        <p class="text-gray-500 text-lg">Aucune note pour le moment</p>
-        <p class="text-gray-400 text-sm mt-2">Créez-en une pour commencer !</p>
+        <p class="text-gray-500 text-lg">No notes available</p>
+        <p class="text-gray-400 text-sm mt-2">Create one to get started!</p>
       </slot>
     </div>
 
-    <!-- Liste des notes -->
+    <!-- Notes List -->
     <ul v-else class="divide-y divide-gray-100">
       <li
         v-for="note in notes"
         :key="note.id"
         class="flex justify-between items-start py-4 px-2 transition-all hover:bg-gray-50 rounded-lg group"
       >
+        <!-- Note Content -->
         <div class="flex-1">
           <h4 class="text-lg font-semibold text-gray-800 mb-2">{{ note.titre }}</h4>
           <p class="text-gray-600 mb-2">{{ note.contenu }}</p>
           <p class="text-sm text-gray-400">
-            Créée par : 
+            Created by: 
             <span v-if="note.user" class="font-medium text-gray-600">{{ note.user.username }}</span>
-            <span v-else class="text-gray-500">Utilisateur #{{ note.userId }}</span>
+            <span v-else class="text-gray-500">User #{{ note.userId }}</span>
           </p>
         </div>
+        
+        <!-- Delete Button -->
         <button
           @click="handleDeleteNote(note.id)"
           class="px-4 py-2 bg-red-500 text-white rounded-lg transition-all hover:bg-red-600 hover:shadow-md opacity-0 group-hover:opacity-100"
-          title="Supprimer"
+          title="Delete"
         >
           <svg
             class="w-5 h-5"

@@ -1,4 +1,11 @@
 <script setup lang="ts">
+/**
+ * LoginView Component
+ * 
+ * Authentication view that handles both login and registration.
+ * Switches between login and registration forms.
+ * Manages user authentication state and redirects authenticated users.
+ */
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUsers } from "../composables/useUsers";
@@ -7,73 +14,101 @@ import RegisterForm from "../components/RegisterForm.vue";
 import { comparePassword, hashPassword } from "../utils/auth";
 import { useAuthStore } from "../stores/authStore";
 
+// Router instance for navigation
 const router = useRouter();
+// User management composable
 const { createUser, fetchUserByUsername } = useUsers();
+// Authentication store
 const authStore = useAuthStore();
 
-const isLogin = ref(true);
-const loading = ref(false);
-const error = ref<string | null>(null);
+// Component reactive state
+const isLogin = ref(true); // Toggle between login/register forms
+const loading = ref(false); // Loading state for async operations
+const error = ref<string | null>(null); // Error message display
 
-// Rediriger si déjà connecté
+/**
+ * Component lifecycle hook
+ * Redirects authenticated users away from login page
+ */
 onMounted(() => {
   if (authStore.isAuthenticated) {
     router.push("/");
   }
 });
 
+/**
+ * Handle user login
+ * Validates credentials and authenticates user
+ * @param data - User credentials (username and password)
+ */
 const handleLogin = async (data: { username: string; password: string }) => {
   try {
     loading.value = true;
     error.value = null;
     
+    // Fetch user from database
     const user = await fetchUserByUsername(data.username);
     if (!user) {
-      throw new Error("Utilisateur non trouvé");
+      throw new Error("User not found");
     }
     
+    // Verify password
     const isPasswordValid = await comparePassword(data.password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Mot de passe incorrect");
+      throw new Error("Incorrect password");
     } else {
-      // Simuler un token (dans une vraie app, cela viendrait du backend)
+      // Simulate token generation (in real app, this would come from backend)
       const token = btoa(`${user.username}:${Date.now()}`);
       authStore.login(user, token);
       router.push("/");
     }
   } catch (err) {
-    error.value = err instanceof Error ? err.message : "Une erreur est survenue";
+    error.value = err instanceof Error ? err.message : "An error occurred";
   } finally {
     loading.value = false;
   }
 };
 
+/**
+ * Handle user registration
+ * Creates new user and authenticates
+ * @param data - User credentials (username and password)
+ */
 const handleRegister = async (data: { username: string; password: string }) => {
   try {
     loading.value = true;
     error.value = null;
     
+    // Hash password for security
     const hashedPassword = await hashPassword(data.password);
     await createUser({
       username: data.username,
       password: hashedPassword,
     });
     
-    // Après l'inscription, on bascule vers le login
+    // After registration, switch to login mode
     isLogin.value = true;
     error.value = null;
   } catch (err) {
-    error.value = err instanceof Error ? err.message : "Une erreur est survenue";
+    error.value = err instanceof Error ? err.message : "An error occurred";
   } finally {
     loading.value = false;
   }
 };
 
+/**
+ * Toggle between login and registration modes
+ * Clears error state when switching
+ */
 const toggleMode = () => {
   isLogin.value = !isLogin.value;
   error.value = null;
 };
 
+/**
+ * Handle error message close
+ * Clears the error state
+ */
 const handleCloseError = () => {
   error.value = null;
 };

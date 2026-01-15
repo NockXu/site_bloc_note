@@ -1,8 +1,10 @@
 <template>
+  <!-- Application Footer -->
   <footer class="mt-16 py-8 border-t border-gray-200 bg-gray-50">
     <div class="max-w-7xl mx-auto px-8 text-center">
+      <!-- Copyright and Credits -->
       <p class="mb-4 text-gray-600 text-sm">
-        © {{ currentYear }} Site Bloc Note - Développé par
+        © {{ currentYear }} Site Bloc Note - Developed by
         <a
           href="https://github.com/NockXu"
           target="_blank"
@@ -21,7 +23,10 @@
           GUILMIN Leny
         </a>
       </p>
+      
+      <!-- Footer Links -->
       <div class="flex justify-center items-center gap-3 text-sm">
+        <!-- GitHub Repository Link -->
         <a
           href="https://github.com/NockXu/site_bloc_note"
           target="_blank"
@@ -31,11 +36,13 @@
           GitHub
         </a>
         <span class="text-gray-300">•</span>
+        
+        <!-- About Page Link -->
         <router-link
           to="/about"
           class="text-gray-600 no-underline transition-colors hover:text-primary-500"
         >
-          À propos
+          About
         </router-link>
       </div>
     </div>
@@ -43,5 +50,14 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * Footer Component
+ * 
+ * Application footer with copyright information and navigation links.
+ * Displays current year, developer credits, and useful links.
+ * Uses responsive design with Tailwind CSS styling.
+ */
+
+// Get current year for copyright display
 const currentYear = new Date().getFullYear();
 </script>

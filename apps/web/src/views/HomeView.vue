@@ -29,7 +29,10 @@ const debounceSearch = (query: string) => {
   }, 300); // 300ms debounce delay
 };
 
-// Execute search with API call
+/**
+ * Execute search with API call
+ * @param query - Search query string
+ */
 const performSearch = async (query: string) => {
   if (!query.trim()) {
     isSearchMode.value = false;
@@ -50,7 +53,10 @@ const performSearch = async (query: string) => {
   }
 };
 
-// Load more search results with pagination
+/**
+ * Load more search results with pagination
+ * Prevents duplicate notes by checking existing IDs
+ */
 const loadMoreSearchResults = async () => {
   if (!loading.value && hasMoreNotes.value && searchQuery.value.trim()) {
     currentPage.value++;
@@ -68,20 +74,29 @@ const loadMoreSearchResults = async () => {
   }
 };
 
-// Handle search input changes
+/**
+ * Handle search input changes
+ * @param query - New search query
+ */
 const handleSearchChange = (query: string) => {
   searchQuery.value = query;
   debounceSearch(query);
 };
 
-// Handle search clear action
+/**
+ * Handle search clear action
+ * Resets search mode and loads normal notes
+ */
 const handleSearchClear = async () => {
   searchQuery.value = "";
   isSearchMode.value = false;
   await loadNotes(true);
 };
 
-// Load notes with pagination and duplicate prevention
+/**
+ * Load notes with pagination and duplicate prevention
+ * @param reset - Whether to reset pagination and clear notes
+ */
 const loadNotes = async (reset = false) => {
   try {
     if (reset) {
@@ -107,7 +122,10 @@ const loadNotes = async (reset = false) => {
   }
 };
 
-// Load more notes with pagination
+/**
+ * Load more notes with pagination
+ * Only works when not in search mode
+ */
 const loadMoreNotes = async () => {
   if (!loading.value && hasMoreNotes.value && !isSearchMode.value) {
     currentPage.value++;
@@ -115,7 +133,10 @@ const loadMoreNotes = async () => {
   }
 };
 
-// Initialize component: load notes and setup auto-refresh
+/**
+ * Component lifecycle hook
+ * Load initial notes and setup auto-refresh
+ */
 onMounted(async () => {
   await loadNotes();
 
@@ -125,7 +146,10 @@ onMounted(async () => {
   }, 1000);
 });
 
-// Cleanup intervals and timeouts on component unmount
+/**
+ * Component cleanup hook
+ * Clear intervals and timeouts to prevent memory leaks
+ */
 onUnmounted(() => {
   if (refreshInterval) {
     clearInterval(refreshInterval);
@@ -135,7 +159,10 @@ onUnmounted(() => {
   }
 });
 
-// Handle error message close
+/**
+ * Handle error message close
+ * Clears the error state
+ */
 const handleCloseError = () => {
   error.value = null;
 };

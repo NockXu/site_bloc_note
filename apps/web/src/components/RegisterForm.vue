@@ -1,34 +1,60 @@
 <script setup lang="ts">
+/**
+ * RegisterForm Component
+ * 
+ * A reusable registration form component with username/password fields.
+ * Handles form validation, loading states, and error display.
+ * Emits submit events with form data and close-error events.
+ */
 import { ref } from "vue";
 
+// Define component props interface
 interface RegisterFormProps {
+  /** Whether the form is in loading state */
   loading?: boolean;
+  /** Error message to display */
   error?: string | null;
 }
 
+// Define component events interface
 interface RegisterFormEmits {
+  /** Emitted when form is submitted with valid data */
   (e: "submit", data: { username: string; password: string }): void;
+  /** Emitted when user wants to dismiss the error message */
   (e: "close-error"): void;
+  /** Emitted when user wants to switch to login mode */
+  (e: "toggle-mode"): void;
 }
 
+// Define props with default values
 const props = withDefaults(defineProps<RegisterFormProps>(), {
   loading: false,
   error: null,
 });
 
+// Define component events
 const emit = defineEmits<RegisterFormEmits>();
 
+// Reactive form data
 const formData = ref({
   username: "",
   password: "",
 });
 
+/**
+ * Handle form submission
+ * Validates form data and emits submit event if valid
+ */
 const handleSubmit = () => {
   if (formData.value.username.trim() && formData.value.password.trim()) {
     emit("submit", { ...formData.value });
   }
 };
 
+/**
+ * Handle error message close
+ * Emits close-error event to dismiss the error message
+ */
 const handleCloseError = () => {
   emit("close-error");
 };
@@ -37,13 +63,13 @@ const handleCloseError = () => {
 <template>
   <div class="min-h-[60vh] py-8">
     <div class="max-w-4xl mx-auto px-4 md:px-8">
-      <!-- Titre -->
+      <!-- Page Title -->
       <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 text-center">
-        Inscription
+        Sign Up
       </h2>
 
       <div class="max-w-md mx-auto">
-        <!-- Messages d'erreur -->
+        <!-- Error Messages -->
         <div
           v-if="error"
           class="rounded-md bg-red-50 p-4 border border-red-200 mb-6"
@@ -88,13 +114,13 @@ const handleCloseError = () => {
           </div>
         </div>
 
-        <!-- Formulaire -->
+        <!-- Form -->
         <div class="bg-white rounded-lg p-6 shadow-md border border-gray-200">
           <form class="space-y-6" @submit.prevent="handleSubmit">
             <div class="space-y-4">
               <div>
                 <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
-                  Nom d'utilisateur
+                  Username
                 </label>
                 <input
                   id="username"
@@ -102,14 +128,14 @@ const handleCloseError = () => {
                   name="username"
                   type="text"
                   required
-                  :disabled="loading"
+                  :disabled="props.loading"
                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all"
-                  placeholder="Choisissez un nom d'utilisateur"
+                  placeholder="Choose a username"
                 />
               </div>
               <div>
                 <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                  Mot de passe
+                  Password
                 </label>
                 <input
                   id="password"
@@ -117,9 +143,9 @@ const handleCloseError = () => {
                   name="password"
                   type="password"
                   required
-                  :disabled="loading"
+                  :disabled="props.loading"
                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all"
-                  placeholder="Choisissez un mot de passe"
+                  placeholder="Choose a password"
                 />
               </div>
             </div>
@@ -127,11 +153,11 @@ const handleCloseError = () => {
             <div>
               <button
                 type="submit"
-                :disabled="loading || !formData.username.trim() || !formData.password.trim()"
+                :disabled="props.loading || !formData.username.trim() || !formData.password.trim()"
                 class="w-full px-8 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-medium transition-all hover:from-primary-600 hover:to-primary-700 hover:shadow-lg disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
               >
                 <svg
-                  v-if="loading"
+                  v-if="props.loading"
                   class="animate-spin h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -164,20 +190,20 @@ const handleCloseError = () => {
                     clip-rule="evenodd"
                   />
                 </svg>
-                {{ loading ? "Chargement..." : "S'inscrire" }}
+                {{ props.loading ? "Loading..." : "Sign Up" }}
               </button>
             </div>
           </form>
 
-          <!-- Lien vers connexion -->
+          <!-- Link to login -->
           <div class="mt-6 text-center">
             <p class="text-gray-600">
-              Déjà un compte ?
+              Already have an account?
               <button
                 @click="$emit('toggle-mode')"
                 class="font-medium text-primary-600 hover:text-primary-500 focus:outline-none"
               >
-                Se connecter
+                Sign In
               </button>
             </p>
           </div>

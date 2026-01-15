@@ -1,41 +1,60 @@
+/**
+ * useNotes Composable
+ * 
+ * Provides reactive state and methods for managing notes.
+ * Handles CRUD operations (Create, Read, Update, Delete) for notes.
+ * Includes pagination and search functionality.
+ * 
+ * @returns Object containing reactive state and note management methods
+ */
 import { ref } from "vue";
 import type { Note, CreateNoteDto, UpdateNoteDto } from "../types/note";
 
 export function useNotes() {
-  const notes = ref<Note[]>([]);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
+  // Reactive state
+  const notes = ref<Note[]>([]); // Array of notes
+  const loading = ref(false); // Loading state indicator
+  const error = ref<string | null>(null); // Error message
 
+  /**
+   * Fetch all notes from the API
+   * Updates the notes array with fetched data
+   */
   const fetchNotes = async () => {
     try {
       loading.value = true;
       error.value = null;
       const response = await fetch("/api/notes");
       if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des notes");
+        throw new Error("Failed to fetch notes");
       }
       notes.value = await response.json();
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : "Une erreur est survenue";
+        err instanceof Error ? err.message : "An error occurred";
       console.error("Fetch notes error:", err);
     } finally {
       loading.value = false;
     }
   };
 
+  /**
+   * Fetch a single note by ID
+   * @param id - The ID of the note to fetch
+   * @returns Promise<Note> - The fetched note
+   */
   const fetchNoteById = async (id: number) => {
     try {
       loading.value = true;
       error.value = null;
       const response = await fetch(`/api/notes/${id}`);
       if (!response.ok) {
-        throw new Error("Erreur lors de la récupération de la note");
+        throw new Error("Failed to fetch note");
       }
       return await response.json();
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : "Une erreur est survenue";
+        err instanceof Error ? err.message : "An error occurred";
       console.error("Fetch note error:", err);
       throw err;
     } finally {
@@ -43,24 +62,33 @@ export function useNotes() {
     }
   };
 
+  /**
+   * Fetch notes by user ID
+   * @param userId - The ID of the user whose notes to fetch
+   */
   const fetchNotesByUserId = async (userId: number) => {
     try {
       loading.value = true;
       error.value = null;
       const response = await fetch(`/api/notes/user/${userId}`);
       if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des notes de l'utilisateur");
+        throw new Error("Failed to fetch user notes");
       }
       notes.value = await response.json();
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : "Une erreur est survenue";
+        err instanceof Error ? err.message : "An error occurred";
       console.error("Fetch notes by user error:", err);
     } finally {
       loading.value = false;
     }
   };
 
+  /**
+   * Create a new note
+   * @param data - Note data to create
+   * @returns Promise<Note> - The created note
+   */
   const createNote = async (data: CreateNoteDto) => {
     try {
       loading.value = true;
@@ -71,14 +99,14 @@ export function useNotes() {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        throw new Error("Erreur lors de la création de la note");
+        throw new Error("Failed to create note");
       }
       const newNote = await response.json();
       notes.value.push(newNote);
       return newNote;
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : "Une erreur est survenue";
+        err instanceof Error ? err.message : "An error occurred";
       console.error("Create note error:", err);
       throw err;
     } finally {
@@ -86,6 +114,12 @@ export function useNotes() {
     }
   };
 
+  /**
+   * Update an existing note
+   * @param id - ID of note to update
+   * @param data - Updated note data
+   * @returns Promise<Note> - The updated note
+   */
   const updateNote = async (id: number, data: UpdateNoteDto) => {
     try {
       loading.value = true;

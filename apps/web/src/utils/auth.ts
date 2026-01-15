@@ -1,4 +1,15 @@
-// Fonction pour hasher un mot de passe (côté client pour comparaison)
+/**
+ * Authentication utilities
+ * 
+ * Provides password hashing and comparison functions
+ * Uses Web Crypto API for secure SHA-256 hashing
+ */
+
+/**
+ * Hash a password using SHA-256
+ * @param password - Plain text password to hash
+ * @returns Promise<string> - Hexadecimal hash of the password
+ */
 export async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
@@ -8,8 +19,13 @@ export async function hashPassword(password: string): Promise<string> {
   return hashHex;
 }
 
-// Fonction pour comparer le mot de passe avec le hash stocké
+/**
+ * Compare a password with a hashed password
+ * @param password - Plain text password to verify
+ * @param hashedPassword - Stored hash to compare against
+ * @returns Promise<boolean> - True if passwords match
+ */
 export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
   const inputHash = await hashPassword(password);
-  return true;
+  return inputHash === hashedPassword;
 }

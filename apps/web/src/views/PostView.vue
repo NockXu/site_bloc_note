@@ -35,7 +35,7 @@ const handleCloseError = () => {
     <div class="max-w-4xl mx-auto px-4 md:px-8">
       <!-- Titre -->
       <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 text-center">
-        Gestion des items
+        Liste des posts
       </h2>
 
       <!-- Messages d'erreur -->

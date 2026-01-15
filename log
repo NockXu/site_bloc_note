@@ -1,0 +1,482 @@
+[thr@thr api]$ npm run test
+
+> api@1.0.0 test
+> jest
+
+
+
+
+
+(node:305113) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ FAIL  src/__tests__/database/database.test.ts
+
+  ● Database Connection › Prisma Client › should connect to database successfully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      10 |       // Test basic connection by trying to query the database
+      11 |       const result = await prisma.user.findMany();
+    > 12 |       expect(Array.isArray(result)).toBe(true);
+         |                                     ^
+      13 |     });
+      14 |
+      15 |     it('should handle database operations', async () => {
+
+      at Object.<anonymous> (src/__tests__/database/database.test.ts:12:37)
+
+  ● Database Connection › Prisma Client › should handle database operations
+
+    expect(received).toHaveProperty(path)
+
+    Matcher error: received value must not be null nor undefined
+
+    Received has value: undefined
+
+      22 |       });
+      23 |
+    > 24 |       expect(testUser).toHaveProperty('id');
+         |                        ^
+      25 |       expect(testUser.username).toBe('test_db_user');
+      26 |
+      27 |       // Clean up
+
+      at Object.<anonymous> (src/__tests__/database/database.test.ts:24:24)
+
+  ● Database Connection › Prisma Client › should handle transaction operations
+
+    TypeError: Cannot read properties of undefined (reading 'user')
+
+      52 |       });
+      53 |
+    > 54 |       expect(result.user).toHaveProperty('id');
+         |                     ^
+      55 |       expect(result.note).toHaveProperty('id');
+      56 |       expect(result.note.userId).toBe(result.user.id);
+      57 |
+
+      at Object.<anonymous> (src/__tests__/database/database.test.ts:54:21)
+
+  ● Database Connection › Database Health Check › should perform health check operations
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "number"
+    Received: "undefined"
+
+      72 |       const noteCount = await prisma.note.count();
+      73 |
+    > 74 |       expect(typeof userCount).toBe('number');
+         |                                ^
+      75 |       expect(typeof noteCount).toBe('number');
+      76 |       expect(userCount).toBeGreaterThanOrEqual(0);
+      77 |       expect(noteCount).toBeGreaterThanOrEqual(0);
+
+      at Object.<anonymous> (src/__tests__/database/database.test.ts:74:32)
+
+
+
+(node:305131) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ FAIL  src/__tests__/setup.ts
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (../../node_modules/@jest/core/build/index.js:1057:18)
+      at ../../node_modules/@jest/core/build/index.js:1127:165
+      at ../../node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (../../node_modules/emittery/index.js:361:23)
+
+(node:305137) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ FAIL  src/__tests__/jest.setup.ts
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (../../node_modules/@jest/core/build/index.js:1057:18)
+      at ../../node_modules/@jest/core/build/index.js:1127:165
+      at ../../node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (../../node_modules/emittery/index.js:361:23)
+
+(node:305120) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ PASS  src/__tests__/users/userController.test.ts
+  ● Console
+
+    console.error
+      PrismaClientValidationError: Validation error: username is required
+          at Object.<anonymous> (/home/thr/site_bloc_note/apps/api/src/__tests__/users/userController.test.ts:33:31)
+          at Promise.finally.completed (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/thr/site_bloc_note/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:497:12) {
+        clientVersion: '6.19.2'
+      }
+
+      30 | ) => {
+      31 |   // Log error for debugging
+    > 32 |   console.error(err);
+         |           ^
+      33 |
+      34 |   // Handle Prisma errors
+      35 |   if (err instanceof Prisma.PrismaClientKnownRequestError) {
+
+      at errorHandler (src/middlewares/errorHandler.ts:32:11)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at ../../node_modules/router/index.js:688:15
+      at next (../../node_modules/router/index.js:276:14)
+      at next (../../node_modules/router/lib/route.js:132:14)
+      at createUser (src/controllers/userController.ts:13:5)
+
+    console.error
+      PrismaClientKnownRequestError: Record not found
+          at Object.<anonymous> (/home/thr/site_bloc_note/apps/api/src/__tests__/users/userController.test.ts:129:29)
+          at Promise.finally.completed (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/thr/site_bloc_note/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:497:12) {
+        code: 'P2025',
+        meta: undefined,
+        clientVersion: '6.19.2'
+      }
+
+      30 | ) => {
+      31 |   // Log error for debugging
+    > 32 |   console.error(err);
+         |           ^
+      33 |
+      34 |   // Handle Prisma errors
+      35 |   if (err instanceof Prisma.PrismaClientKnownRequestError) {
+
+      at errorHandler (src/middlewares/errorHandler.ts:32:11)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at ../../node_modules/router/index.js:688:15
+      at next (../../node_modules/router/index.js:276:14)
+      at next (../../node_modules/router/lib/route.js:132:14)
+      at updateUser (src/controllers/userController.ts:60:5)
+
+    console.error
+      PrismaClientKnownRequestError: Record not found
+          at Object.<anonymous> (/home/thr/site_bloc_note/apps/api/src/__tests__/users/userController.test.ts:165:29)
+          at Promise.finally.completed (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/thr/site_bloc_note/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/thr/site_bloc_note/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/thr/site_bloc_note/node_modules/jest-runner/build/testWorker.js:497:12) {
+        code: 'P2025',
+        meta: undefined,
+        clientVersion: '6.19.2'
+      }
+
+      30 | ) => {
+      31 |   // Log error for debugging
+    > 32 |   console.error(err);
+         |           ^
+      33 |
+      34 |   // Handle Prisma errors
+      35 |   if (err instanceof Prisma.PrismaClientKnownRequestError) {
+
+      at errorHandler (src/middlewares/errorHandler.ts:32:11)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at Immediate.next (../../node_modules/router/index.js:291:5)
+      at Immediate._onImmediate (../../node_modules/router/index.js:688:15)
+
+(node:305111) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ FAIL  src/__tests__/notes/noteController.test.ts
+  ● Note Controller › POST /api/notes › should create a new note
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › POST /api/notes › should return 500 for missing titre
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › GET /api/notes › should return all notes
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › GET /api/notes/:id › should return a note by ID
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › GET /api/notes/:id › should return 404 for non-existent note
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › GET /api/notes/user/:userId › should return notes for specific user
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › PUT /api/notes/:id › should update a note
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › PUT /api/notes/:id › should return 404 for non-existent note
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › DELETE /api/notes/:id › should delete a note
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+  ● Note Controller › DELETE /api/notes/:id › should return 404 for non-existent note
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+      13 |       }
+      14 |     });
+    > 15 |     userId = user.id;
+         |                   ^
+      16 |   });
+      17 |
+      18 |   describe('POST /api/notes', () => {
+
+      at Object.<anonymous> (src/__tests__/notes/noteController.test.ts:15:19)
+
+(node:305112) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ FAIL  src/__tests__/routes/userRoutes.test.ts
+  ● User Routes › PUT /api/users/:id › should return 404 for updating non-existent user
+
+    expected 404 "Not Found", got 200 "OK"
+
+      43 |         .put('/api/users/99999')
+      44 |         .send(updateData)
+    > 45 |         .expect(404);
+         |          ^
+      46 |     });
+      47 |   });
+      48 |
+
+      at Object.<anonymous> (src/__tests__/routes/userRoutes.test.ts:45:10)
+      ----
+      at Test._assertStatus (../../node_modules/supertest/lib/test.js:309:14)
+      at ../../node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../../node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../../node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../../node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../../node_modules/supertest/lib/test.js:152:11)
+
+  ● User Routes › DELETE /api/users/:id › should return 404 for deleting non-existent user
+
+    expected 404 "Not Found", got 200 "OK"
+
+      51 |       await request(app)
+      52 |         .delete('/api/users/99999')
+    > 53 |         .expect(404);
+         |          ^
+      54 |     });
+      55 |   });
+      56 | });
+
+      at Object.<anonymous> (src/__tests__/routes/userRoutes.test.ts:53:10)
+      ----
+      at Test._assertStatus (../../node_modules/supertest/lib/test.js:309:14)
+      at ../../node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../../node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../../node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../../node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../../node_modules/supertest/lib/test.js:152:11)
+
+(node:305119) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ FAIL  src/__tests__/routes/noteRoutes.test.ts
+  ● Note Routes › PUT /api/notes/:id › should return 404 for updating non-existent note
+
+    expected 404 "Not Found", got 200 "OK"
+
+      53 |         .put('/api/notes/99999')
+      54 |         .send(updateData)
+    > 55 |         .expect(404);
+         |          ^
+      56 |     });
+      57 |   });
+      58 |
+
+      at Object.<anonymous> (src/__tests__/routes/noteRoutes.test.ts:55:10)
+      ----
+      at Test._assertStatus (../../node_modules/supertest/lib/test.js:309:14)
+      at ../../node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../../node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../../node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../../node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../../node_modules/supertest/lib/test.js:152:11)
+
+  ● Note Routes › DELETE /api/notes/:id › should return 404 for deleting non-existent note
+
+    expected 404 "Not Found", got 200 "OK"
+
+      61 |       await request(app)
+      62 |         .delete('/api/notes/99999')
+    > 63 |         .expect(404);
+         |          ^
+      64 |     });
+      65 |   });
+      66 | });
+
+      at Object.<anonymous> (src/__tests__/routes/noteRoutes.test.ts:63:10)
+      ----
+      at Test._assertStatus (../../node_modules/supertest/lib/test.js:309:14)
+      at ../../node_modules/supertest/lib/test.js:365:13
+      at Test._assertFunction (../../node_modules/supertest/lib/test.js:342:13)
+      at Test.assert (../../node_modules/supertest/lib/test.js:195:23)
+      at localAssert (../../node_modules/supertest/lib/test.js:138:14)
+      at Server.<anonymous> (../../node_modules/supertest/lib/test.js:152:11)
+
+Test Suites: 6 failed, 1 passed, 7 total
+Tests:       18 failed, 17 passed, 35 total
+Snapshots:   0 total
+Time:        3.759 s, estimated 4 s
+Ran all test suites.
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /home/thr/site_bloc_note/apps/api
+npm error workspace api@1.0.0
+npm error location /home/thr/site_bloc_note/apps/api
+npm error command failed
+npm error command sh -c jest

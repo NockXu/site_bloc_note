@@ -11,7 +11,7 @@ describe('Note Controller', () => {
       const noteData = {
         titre: 'Test Note',
         contenu: 'This is a test note content',
-        userId: mockUserId
+        userId: mockUserId,
       };
 
       const mockNote = { id: 1, ...noteData };
@@ -25,19 +25,19 @@ describe('Note Controller', () => {
       expect(response.body).toEqual(mockNote);
       expect(prismaMock.note.create).toHaveBeenCalledWith({
         data: noteData,
-        include: { user: true }
+        include: { user: true },
       });
     });
 
     it('should return 400 for missing titre', async () => {
       const noteData = {
         contenu: 'This is a test note content',
-        userId: mockUserId
+        userId: mockUserId,
       };
 
       const validationError = new Prisma.PrismaClientValidationError(
         'Validation error: titre is required',
-        { clientVersion: '6.19.2' }
+        { clientVersion: '6.19.2' },
       );
       prismaMock.note.create.mockRejectedValue(validationError);
 
@@ -54,21 +54,29 @@ describe('Note Controller', () => {
   describe('GET /api/notes', () => {
     it('should return all notes', async () => {
       const mockNotes = [
-        { id: 1, titre: 'Test Note 1', contenu: 'Content 1', userId: mockUserId },
-        { id: 2, titre: 'Test Note 2', contenu: 'Content 2', userId: mockUserId }
+        {
+          id: 1,
+          titre: 'Test Note 1',
+          contenu: 'Content 1',
+          userId: mockUserId,
+        },
+        {
+          id: 2,
+          titre: 'Test Note 2',
+          contenu: 'Content 2',
+          userId: mockUserId,
+        },
       ];
 
       prismaMock.note.findMany.mockResolvedValue(mockNotes);
 
-      const response = await request(app)
-        .get('/api/notes')
-        .expect(200);
+      const response = await request(app).get('/api/notes').expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body.length).toBe(2);
       expect(response.body).toEqual(mockNotes);
       expect(prismaMock.note.findMany).toHaveBeenCalledWith({
-        include: { user: true }
+        include: { user: true },
       });
     });
   });
@@ -79,28 +87,24 @@ describe('Note Controller', () => {
         id: 1,
         titre: 'Test Note',
         contenu: 'Test content',
-        userId: mockUserId
+        userId: mockUserId,
       };
 
       prismaMock.note.findUnique.mockResolvedValue(mockNote);
 
-      const response = await request(app)
-        .get('/api/notes/1')
-        .expect(200);
+      const response = await request(app).get('/api/notes/1').expect(200);
 
       expect(response.body).toEqual(mockNote);
       expect(prismaMock.note.findUnique).toHaveBeenCalledWith({
         where: { id: 1 },
-        include: { user: true }
+        include: { user: true },
       });
     });
 
     it('should return 404 for non-existent note', async () => {
       prismaMock.note.findUnique.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/api/notes/99999')
-        .expect(404);
+      const response = await request(app).get('/api/notes/99999').expect(404);
 
       expect(response.body.message).toBe('Note not found');
     });
@@ -109,8 +113,18 @@ describe('Note Controller', () => {
   describe('GET /api/notes/user/:userId', () => {
     it('should return notes for specific user', async () => {
       const mockNotes = [
-        { id: 1, titre: 'Test Note 1', contenu: 'Content 1', userId: mockUserId },
-        { id: 2, titre: 'Test Note 2', contenu: 'Content 2', userId: mockUserId }
+        {
+          id: 1,
+          titre: 'Test Note 1',
+          contenu: 'Content 1',
+          userId: mockUserId,
+        },
+        {
+          id: 2,
+          titre: 'Test Note 2',
+          contenu: 'Content 2',
+          userId: mockUserId,
+        },
       ];
 
       prismaMock.note.findMany.mockResolvedValue(mockNotes);
@@ -126,7 +140,7 @@ describe('Note Controller', () => {
       });
       expect(prismaMock.note.findMany).toHaveBeenCalledWith({
         where: { userId: mockUserId },
-        include: { user: true }
+        include: { user: true },
       });
     });
   });
@@ -136,7 +150,7 @@ describe('Note Controller', () => {
       const updateData = {
         titre: 'Updated Note',
         contenu: 'Updated content',
-        userId: mockUserId
+        userId: mockUserId,
       };
 
       const mockUpdatedNote = { id: 1, ...updateData };
@@ -151,7 +165,7 @@ describe('Note Controller', () => {
       expect(prismaMock.note.update).toHaveBeenCalledWith({
         where: { id: 1 },
         data: updateData,
-        include: { user: true }
+        include: { user: true },
       });
     });
 
@@ -159,12 +173,12 @@ describe('Note Controller', () => {
       const updateData = {
         titre: 'Updated Note',
         contenu: 'Updated content',
-        userId: mockUserId
+        userId: mockUserId,
       };
 
       const notFoundError = new Prisma.PrismaClientKnownRequestError(
         'Record not found',
-        { code: 'P2025', clientVersion: '6.19.2' }
+        { code: 'P2025', clientVersion: '6.19.2' },
       );
       prismaMock.note.update.mockRejectedValue(notFoundError);
 
@@ -183,25 +197,23 @@ describe('Note Controller', () => {
         id: 1,
         titre: 'Test Note',
         contenu: 'Test content',
-        userId: mockUserId
+        userId: mockUserId,
       };
 
       prismaMock.note.delete.mockResolvedValue(mockDeletedNote);
 
-      const response = await request(app)
-        .delete('/api/notes/1')
-        .expect(200);
+      const response = await request(app).delete('/api/notes/1').expect(200);
 
       expect(response.body).toEqual(mockDeletedNote);
       expect(prismaMock.note.delete).toHaveBeenCalledWith({
-        where: { id: 1 }
+        where: { id: 1 },
       });
     });
 
     it('should return 404 for non-existent note', async () => {
       const notFoundError = new Prisma.PrismaClientKnownRequestError(
         'Record not found',
-        { code: 'P2025', clientVersion: '6.19.2' }
+        { code: 'P2025', clientVersion: '6.19.2' },
       );
       prismaMock.note.delete.mockRejectedValue(notFoundError);
 

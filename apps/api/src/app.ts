@@ -4,11 +4,11 @@
  */
 
 import express from 'express';
-import userRoutes from './routes/userRoutes.js';
-import noteRoutes from './routes/noteRoutes.js';
-import healthRoutes from './routes/health.js';
-import { errorHandler } from './middlewares/errorHandler.js';
-import { setupSwagger } from './config/swagger.js';
+import userRoutes from './routes/userRoutes.ts';
+import noteRoutes from './routes/noteRoutes.ts';
+import healthRoutes from './routes/health.ts';
+import { errorHandler } from './middlewares/errorHandler.ts';
+import { setupSwagger } from './config/swagger.ts';
 
 // Create Express application
 const app = express();

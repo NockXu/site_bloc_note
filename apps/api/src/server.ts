@@ -3,8 +3,8 @@
  * @description Starts Express server on configured port
  */
 
-import app from './app.js';
-import config from './config/config.js';
+import app from './app.ts';
+import config from './config/config.ts';
 
 // Start server
 app.listen(config.port, () => {

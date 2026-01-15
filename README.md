@@ -10,12 +10,12 @@ Monorepo using Turborepo with:
 - **Web Frontend**: Vue.js 3 application with TypeScript and Vite
 - **Database**: MySQL with Prisma ORM
 
-## Dev Team 1
+## Dev Team 4
 
 [DAVID Gabriel](https://github.com/NockXu)
 [GUILMIN Leny](https://github.com/TarzanHR)
 
-## Dev Team 2
+## Dev Team <numéro du groupe>
 
 []()
 []()

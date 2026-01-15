@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "API REST TypeScript avec Express",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
@@ -20,8 +20,8 @@
     "reset-db": "npm run prisma:migrate && npm run seed"
   },
   "dependencies": {
-    "@prisma/client": "^7.2.0",
     "@types/bcrypt": "^6.0.0",
+    "@prisma/client": "^6.19.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "bcrypt": "^6.0.0",
@@ -44,7 +44,7 @@
     "prisma": "^6.19.2",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
-    "ts-node": "^1.7.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
 }

@@ -6,7 +6,7 @@
       class="max-w-7xl mx-auto px-8 flex flex-wrap justify-between items-center gap-4"
     >
       <div class="logo">
-        <h1 class="text-3xl font-bold m-0">📝 Bloc Notes</h1>
+        <h1 class="text-3xl font-bold m-0">Bloc Notes</h1>
       </div>
 
       <nav class="flex gap-6">

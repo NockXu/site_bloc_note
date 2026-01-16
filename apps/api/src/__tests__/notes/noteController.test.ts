@@ -5,6 +5,19 @@ import { Prisma } from '@prisma/client';
 
 describe('Note Controller', () => {
   const mockUserId = 1;
+  const now = new Date();
+
+  // Helper function to create mock note with all required fields
+  const createMockNote = (overrides: any = {}) => ({
+    id: 1,
+    titre: 'Test Note',
+    contenu: 'Test content',
+    userId: mockUserId,
+    createdAt: now,
+    updatedAt: null,
+    parentId: null,
+    ...overrides,
+  });
 
   describe('POST /api/notes', () => {
     it('should create a new note', async () => {
@@ -14,7 +27,7 @@ describe('Note Controller', () => {
         userId: mockUserId,
       };
 
-      const mockNote = { id: 1, ...noteData };
+      const mockNote = createMockNote({ titre: noteData.titre, contenu: noteData.contenu });
       prismaMock.note.create.mockResolvedValue(mockNote);
 
       const response = await request(app)

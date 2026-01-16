@@ -1,13 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../config/database';
 
-// Create a note
+// Create a note (or reply to another note)
 export const createNote = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { titre, contenu, userId } = req.body;
+    const { titre, contenu, userId, parentId } = req.body;
     const newNote = await prisma.note.create({
-      data: { titre, contenu, userId: parseInt(userId, 10) },
-      include: { user: true },
+      data: {
+        titre,
+        contenu,
+        userId: parseInt(userId, 10),
+        parentId: parentId ? parseInt(parentId, 10) : null
+      },
+      include: {
+        user: true,
+        parent: {
+          include: { user: true }
+        }
+      },
     });
     res.status(201).json(newNote);
   } catch (error) {
@@ -15,11 +25,20 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-// Get all notes
+// Get all notes (only top-level notes, not replies)
 export const getNotes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const notes = await prisma.note.findMany({
-      include: { user: true },
+      where: { parentId: null },
+      include: {
+        user: true,
+        replies: {
+          include: {
+            user: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
     });
     res.json(notes);
   } catch (error) {
@@ -27,14 +46,25 @@ export const getNotes = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
-// Get note by ID
+// Get note by ID (with all replies)
 export const getNoteById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const idParam = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(idParam, 10);
     const note = await prisma.note.findUnique({
       where: { id },
-      include: { user: true },
+      include: {
+        user: true,
+        replies: {
+          include: {
+            user: true
+          },
+          orderBy: { createdAt: 'asc' }
+        },
+        parent: {
+          include: { user: true }
+        }
+      },
     });
     if (!note) {
       res.status(404).json({ message: 'Note not found' });
@@ -46,14 +76,25 @@ export const getNoteById = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// Get notes by user ID
+// Get notes by user ID (only top-level notes)
 export const getNotesByUserId = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userIdParam = Array.isArray(req.params.userId) ? req.params.userId[0] : req.params.userId;
     const userId = parseInt(userIdParam, 10);
     const notes = await prisma.note.findMany({
-      where: { userId },
-      include: { user: true },
+      where: {
+        userId,
+        parentId: null
+      },
+      include: {
+        user: true,
+        replies: {
+          include: {
+            user: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
     });
     res.json(notes);
   } catch (error) {
@@ -87,6 +128,24 @@ export const deleteNote = async (req: Request, res: Response, next: NextFunction
       where: { id },
     });
     res.json(deletedNote);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get replies for a specific note
+export const getRepliesByNoteId = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const noteIdParam = Array.isArray(req.params.noteId) ? req.params.noteId[0] : req.params.noteId;
+    const noteId = parseInt(noteIdParam, 10);
+    const replies = await prisma.note.findMany({
+      where: { parentId: noteId },
+      include: {
+        user: true
+      },
+      orderBy: { createdAt: 'asc' }
+    });
+    res.json(replies);
   } catch (error) {
     next(error);
   }

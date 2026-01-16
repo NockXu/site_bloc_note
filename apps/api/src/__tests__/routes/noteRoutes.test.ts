@@ -4,11 +4,23 @@ import { prismaMock } from '../jest.setup';
 import { Prisma } from '@prisma/client';
 
 describe('Note Routes', () => {
+  const now = new Date();
+  const createMockNote = (overrides: any = {}) => ({
+    id: 1,
+    titre: 'Test Note',
+    contenu: 'Test content',
+    userId: 1,
+    createdAt: now,
+    updatedAt: null,
+    parentId: null,
+    ...overrides,
+  });
+
   describe('GET /api/notes', () => {
     it('should return 200 for getting all notes', async () => {
       const mockNotes = [
-        { id: 1, titre: 'Note 1', contenu: 'Content 1', userId: 1 },
-        { id: 2, titre: 'Note 2', contenu: 'Content 2', userId: 1 },
+        createMockNote({ id: 1, titre: 'Note 1', contenu: 'Content 1' }),
+        createMockNote({ id: 2, titre: 'Note 2', contenu: 'Content 2' }),
       ];
 
       prismaMock.note.findMany.mockResolvedValue(mockNotes);
@@ -43,8 +55,8 @@ describe('Note Routes', () => {
   describe('GET /api/notes/user/:userId', () => {
     it('should return 200 for getting user notes', async () => {
       const mockNotes = [
-        { id: 1, titre: 'Note 1', contenu: 'Content 1', userId: 1 },
-        { id: 2, titre: 'Note 2', contenu: 'Content 2', userId: 1 },
+        createMockNote({ id: 1, titre: 'Note 1', contenu: 'Content 1' }),
+        createMockNote({ id: 2, titre: 'Note 2', contenu: 'Content 2' }),
       ];
 
       prismaMock.note.findMany.mockResolvedValue(mockNotes);

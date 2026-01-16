@@ -23,7 +23,7 @@
           GUILMIN Leny
         </a>
       </p>
-      
+
       <!-- Footer Links -->
       <div class="flex justify-center items-center gap-3 text-sm">
         <!-- GitHub Repository Link -->
@@ -36,14 +36,6 @@
           GitHub
         </a>
         <span class="text-gray-300">•</span>
-        
-        <!-- About Page Link -->
-        <router-link
-          to="/about"
-          class="text-gray-600 no-underline transition-colors hover:text-primary-500"
-        >
-          About
-        </router-link>
       </div>
     </div>
   </footer>
@@ -52,7 +44,7 @@
 <script setup lang="ts">
 /**
  * Footer Component
- * 
+ *
  * Application footer with copyright information and navigation links.
  * Displays current year, developer credits, and useful links.
  * Uses responsive design with Tailwind CSS styling.

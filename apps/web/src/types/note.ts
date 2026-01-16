@@ -6,12 +6,16 @@ export interface Note {
   user?: User
   createdAt?: string
   updatedAt?: string
+  parentId?: number | null
+  parent?: Note | null
+  replies?: Note[]
 }
 
 export interface CreateNoteDto {
   titre: string
   contenu: string
   userId: number
+  parentId?: number | null
 }
 
 export interface UpdateNoteDto {

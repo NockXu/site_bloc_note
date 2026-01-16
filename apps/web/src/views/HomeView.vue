@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar.vue";
 import NotesList from "../components/NotesList.vue";
 
 // Use notes composable for data management
-const { loading, error, fetchNotesPaginated, searchNotes } = useNotes();
+const { loading, error, fetchNotesPaginated, searchNotes, createNote } = useNotes();
 
 // Component reactive state
 const recentNotes = ref<any[]>([]);
@@ -166,6 +166,21 @@ onUnmounted(() => {
 const handleCloseError = () => {
   error.value = null;
 };
+
+/**
+ * Handle reply creation
+ * Creates a new note as a reply to an existing note
+ * @param replyData - Reply note data including parentId
+ */
+const handleCreateReply = async (replyData: any) => {
+  try {
+    await createNote(replyData);
+    // Refresh notes to show the new reply
+    await loadNotes(true);
+  } catch (error) {
+    console.error("Create reply error:", error);
+  }
+};
 </script>
 
 <template>
@@ -205,6 +220,7 @@ const handleCloseError = () => {
         :has-more-notes="hasMoreNotes"
         :load-more-text="isSearchMode ? 'Load more results' : 'Load more notes'"
         @load-more="isSearchMode ? loadMoreSearchResults() : loadMoreNotes()"
+        @create-reply="handleCreateReply"
       />
     </div>
   </div>

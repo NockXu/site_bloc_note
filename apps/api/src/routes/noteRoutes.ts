@@ -11,6 +11,7 @@ import {
   getNotesByUserId,
   updateNote,
   deleteNote,
+  getRepliesByNoteId,
 } from '../controllers/noteController';
 
 const router = Router();
@@ -91,7 +92,7 @@ router.get('/user/:userId', getNotesByUserId);
  * @swagger
  * /api/notes:
  *   post:
- *     summary: Create a new note
+ *     summary: Create a new note or reply to an existing note
  *     tags: [Notes]
  *     requestBody:
  *       required: true
@@ -113,6 +114,10 @@ router.get('/user/:userId', getNotesByUserId);
  *               userId:
  *                 type: integer
  *                 example: 1
+ *               parentId:
+ *                 type: integer
+ *                 example: 5
+ *                 description: ID of the parent note (optional, for replies)
  *     responses:
  *       201:
  *         description: Note created successfully
@@ -202,5 +207,30 @@ router.put('/:id', updateNote);
  *               $ref: '#/components/schemas/Error'
  */
 router.delete('/:id', deleteNote);
+
+/**
+ * @swagger
+ * /api/notes/{noteId}/replies:
+ *   get:
+ *     summary: Get all replies for a specific note
+ *     tags: [Notes]
+ *     parameters:
+ *       - in: path
+ *         name: noteId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Note ID
+ *     responses:
+ *       200:
+ *         description: List of replies for the specified note
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Note'
+ */
+router.get('/:noteId/replies', getRepliesByNoteId);
 
 export default router;
